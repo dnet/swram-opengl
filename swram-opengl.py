@@ -1,0 +1,120 @@
+#!/usr/bin/env python
+
+import sys
+from OpenGL.GL import *
+from OpenGL.GLU import *
+from OpenGL.GLUT import *
+
+def display():
+	glColor3f(0.0, 1.0, 0.0)
+	mySphere = gluNewQuadric()
+	gluQuadricDrawStyle(mySphere, GLU_LINE)
+	
+	glTranslatef(0.0, 0.0, -5.0)
+	gluSphere(mySphere, 2.0, 12, 12)
+	
+	glTranslatef(0.0, 0.0, 10.0)
+	gluSphere(mySphere, 1.0, 12, 12)
+	
+	glTranslatef(0.0, -5.0, 0.0)
+	glRotatef(90.0, 0.0, 1.0, 0.0)
+	gluSphere(mySphere, 1.0, 12, 12)
+	
+	glFlush()
+	
+def axis():
+	glClear(GL_COLOR_BUFFER_BIT)
+	
+	glBegin(GL_LINES)
+	glColor3f(0.3, 0.3, 0.3)
+	glVertex3f(-10.0, 0.0, 0.0)
+	glVertex3f(10.0, 0.0, 0.0)
+	glVertex3f(0.0, -10.0, 0.0)
+	glVertex3f(0.0, 10.0, 0.0)
+	glVertex3f(0.0, 0.0, -10.0)
+	glVertex3f(0.0, 0.0, 10.0)
+	glEnd()
+
+	biggest = 10
+	x = 88
+	y = 89
+	z = 90
+	r = range (0, (biggest + 1))
+	for i in r:
+		ascii = 48+i
+
+		# x axis positive
+		glRasterPos3f(i, 0.0, 0.0)
+		glColor3f(0.3, 0.3, 0.3)
+		if i == biggest:
+			glutBitmapCharacter(GLUT_BITMAP_8_BY_13, x)
+		else:
+			glutBitmapCharacter(GLUT_BITMAP_8_BY_13, ascii)
+		# x axis negative
+		glRasterPos3f(-i, 0.0, 0.0)
+		glColor3f(0.5, 0.0, 0.0)
+		if i == biggest:
+			glutBitmapCharacter(GLUT_BITMAP_8_BY_13, x)
+		else:
+			glutBitmapCharacter(GLUT_BITMAP_8_BY_13, ascii)
+
+		# y axis positive
+		glRasterPos3f(0.0, i, 0.0)
+		glColor3f(0.3, 0.3, 0.3)
+		if i == biggest:
+			glutBitmapCharacter(GLUT_BITMAP_8_BY_13, y)
+		else:
+			glutBitmapCharacter(GLUT_BITMAP_8_BY_13, ascii)
+		# x axis negative
+		glRasterPos3f(0.0, -i, 0.0)
+		glColor3f(0.5, 0.0, 0.0)
+		if i == biggest:
+			glutBitmapCharacter(GLUT_BITMAP_8_BY_13, y)
+		else:
+			glutBitmapCharacter(GLUT_BITMAP_8_BY_13, ascii)
+
+		# z axis positive
+		glRasterPos3f(0.0, 0.0, i)
+		glColor3f(0.3, 0.3, 0.3)
+		if i == biggest:
+			glutBitmapCharacter(GLUT_BITMAP_8_BY_13, z)
+		else:
+			glutBitmapCharacter(GLUT_BITMAP_8_BY_13, ascii)
+		# z axis negative
+		glRasterPos3f(0.0, 0.0, -i)
+		glColor3f(0.5, 0.0, 0.0)
+		if i == biggest:
+			glutBitmapCharacter(GLUT_BITMAP_8_BY_13, z)
+		else:
+			glutBitmapCharacter(GLUT_BITMAP_8_BY_13, ascii)
+	
+	glFlush()
+	
+def init():
+	glClearColor(0.0, 0.0, 0.0, 0.0)
+	glColor3f(0.0, 0.0, 0.0)
+	glMatrixMode(GL_PROJECTION)
+	glLoadIdentity()
+	gluPerspective(30, 1.0, 0.0, 100.0)
+	glMatrixMode(GL_MODELVIEW)
+	glLoadIdentity()
+	gluLookAt(20.0, 20.0, 20.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
+	axis()
+
+def mymouse(but, stat, x, y):
+	if stat == GLUT_DOWN:
+		if but == GLUT_LEFT_BUTTON:
+			print x, y, "Press right button to exit"
+		else:
+			sys.exit()
+		
+glutInit(sys.argv)
+glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
+glutInitWindowSize(500, 500)
+glutInitWindowPosition(0, 0)
+glutCreateWindow('model')
+glutDisplayFunc(display)
+glutMouseFunc(mymouse)
+
+init()
+glutMainLoop()
