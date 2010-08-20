@@ -6,6 +6,9 @@ from OpenGL.GLU import *
 from OpenGL.GLUT import *
 from threading import Thread, Lock, Event
 
+class Camera:
+	zoom = 1.0
+
 class SwarmEntity:
 	def __init__(self, line):
 		parts = line.split()
@@ -47,6 +50,9 @@ def idle():
 		glutPostRedisplay()
 
 def display():
+	glLoadIdentity()
+	dist = 20.0 / Camera.zoom
+	gluLookAt(dist, dist, dist, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
 	axis()
 	glColor3f(0.0, 1.0, 0.0)
 	mySphere = gluNewQuadric()
@@ -137,8 +143,16 @@ def init():
 	glLoadIdentity()
 	gluPerspective(30, 1.0, 0.0, 100.0)
 	glMatrixMode(GL_MODELVIEW)
-	glLoadIdentity()
-	gluLookAt(20.0, 20.0, 20.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
+
+def mykeyb(key, x, y):
+	if key == '+':
+		Camera.zoom *= 1.2
+	elif key == '-':
+		Camera.zoom /= 1.2
+	else:
+		return
+	print 'Zoom is now', Camera.zoom
+	glutPostRedisplay()
 
 def mymouse(but, stat, x, y):
 	if stat == GLUT_DOWN:
@@ -153,6 +167,7 @@ glutInitWindowSize(500, 500)
 glutInitWindowPosition(0, 0)
 glutCreateWindow('Swarm visualization')
 glutDisplayFunc(display)
+glutKeyboardFunc(mykeyb)
 glutMouseFunc(mymouse)
 glutIdleFunc(idle)
 
