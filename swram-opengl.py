@@ -51,15 +51,15 @@ def display():
 	glColor3f(0.0, 1.0, 0.0)
 	mySphere = gluNewQuadric()
 	gluQuadricDrawStyle(mySphere, GLU_LINE)
-	glPushMatrix()
 	
 	Reader.lock.acquire()
 	for entity in Reader.swarm_entities:
+		glPushMatrix()
 		glTranslatef(entity.x, entity.y, entity.z)
 		gluSphere(mySphere, 1.0, 12, 12)
+		glPopMatrix()
 	Reader.lock.release()
 	
-	glPopMatrix()
 	glFlush()
 	
 def axis():
