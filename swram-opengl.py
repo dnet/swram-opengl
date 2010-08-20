@@ -4,6 +4,11 @@ import sys
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
+from threading import Thread
+
+class Reader(Thread):
+	def run(self):
+		print 'Waithing for data on stdin'
 
 def display():
 	glColor3f(0.0, 1.0, 0.0)
@@ -117,4 +122,6 @@ glutDisplayFunc(display)
 glutMouseFunc(mymouse)
 
 init()
+rdr = Reader()
+rdr.start()
 glutMainLoop()
