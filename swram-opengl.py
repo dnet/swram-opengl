@@ -4,11 +4,42 @@ import sys
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
-from threading import Thread
+from threading import Thread, Lock, Event
+
+class SwarmEntity:
+	def __init__(self, line):
+		parts = line.split()
+		self.x = float(parts[0])
+		self.y = float(parts[1])
+		self.z = float(parts[2])
 
 class Reader(Thread):
+	lock = Lock()
+	changed = Event()
+	swarm_entities = []
 	def run(self):
 		print 'Waithing for data on stdin'
+		while True:
+			self.read_entities()
+
+	def read_entities(self):
+		entities = []
+		while True:
+			line = sys.stdin.readline()
+			if 'done' in line:
+				break
+			try:
+				entities.append(SwarmEntity(line))
+			except:
+				print 'Invalid line:', line
+		self.done(entities)
+
+	def done(self, entities):
+		print 'Updating view'
+		Reader.lock.acquire()
+		Reader.swarm_entities = entities
+		Reader.lock.release()
+		Reader.changed.set()
 
 def display():
 	glColor3f(0.0, 1.0, 0.0)
