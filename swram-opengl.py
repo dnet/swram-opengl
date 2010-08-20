@@ -41,21 +41,24 @@ class Reader(Thread):
 		Reader.lock.release()
 		Reader.changed.set()
 
+def idle():
+	if Reader.changed.isSet():
+		Reader.changed.clear()
+		glutPostRedisplay()
+
 def display():
 	glColor3f(0.0, 1.0, 0.0)
 	mySphere = gluNewQuadric()
 	gluQuadricDrawStyle(mySphere, GLU_LINE)
+	glPushMatrix()
 	
-	glTranslatef(0.0, 0.0, -5.0)
-	gluSphere(mySphere, 2.0, 12, 12)
+	Reader.lock.acquire()
+	for entity in Reader.swarm_entities:
+		glTranslatef(entity.x, entity.y, entity.z)
+		gluSphere(mySphere, 1.0, 12, 12)
+	Reader.lock.release()
 	
-	glTranslatef(0.0, 0.0, 10.0)
-	gluSphere(mySphere, 1.0, 12, 12)
-	
-	glTranslatef(0.0, -5.0, 0.0)
-	glRotatef(90.0, 0.0, 1.0, 0.0)
-	gluSphere(mySphere, 1.0, 12, 12)
-	
+	glPopMatrix()
 	glFlush()
 	
 def axis():
@@ -151,6 +154,7 @@ glutInitWindowPosition(0, 0)
 glutCreateWindow('Swarm visualization')
 glutDisplayFunc(display)
 glutMouseFunc(mymouse)
+glutIdleFunc(idle)
 
 init()
 rdr = Reader()
