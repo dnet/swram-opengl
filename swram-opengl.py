@@ -47,6 +47,7 @@ def idle():
 		glutPostRedisplay()
 
 def display():
+	axis()
 	glColor3f(0.0, 1.0, 0.0)
 	mySphere = gluNewQuadric()
 	gluQuadricDrawStyle(mySphere, GLU_LINE)
@@ -138,7 +139,6 @@ def init():
 	glMatrixMode(GL_MODELVIEW)
 	glLoadIdentity()
 	gluLookAt(20.0, 20.0, 20.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
-	axis()
 
 def mymouse(but, stat, x, y):
 	if stat == GLUT_DOWN:
