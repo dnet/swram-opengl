@@ -36,6 +36,8 @@ class Reader(Thread):
 		while line:
 			if line.startswith('done'):
 				break
+			if line.startswith('exit'):
+				sys.exit(0)
 			try:
 				entities.append(SwarmEntity(line.strip()))
 			except:
